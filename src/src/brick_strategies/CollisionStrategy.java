@@ -2,16 +2,9 @@ package src.brick_strategies;
 
 import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
-import danogl.collisions.Layer;
+import src.gameobjects.Brick;
 
-public class CollisionStrategy {
+public interface CollisionStrategy {
+    void onCollision(GameObject first, GameObject second);
 
-    private final GameObjectCollection gameObjects;
-
-    public CollisionStrategy(GameObjectCollection gameObjects){
-        this.gameObjects = gameObjects;
-    }
-    public void onCollision(GameObject thisObj, GameObject otherObj) {
-        gameObjects.removeGameObject(thisObj, Layer.STATIC_OBJECTS);
-    }
 }

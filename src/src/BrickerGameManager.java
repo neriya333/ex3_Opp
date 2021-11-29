@@ -2,6 +2,7 @@ package src;
 
 import danogl.util.Counter;
 import src.brick_strategies.CollisionStrategy;
+import src.brick_strategies.CollisionStrategyClass;
 import danogl.GameManager;
 import danogl.GameObject;
 import danogl.collisions.Layer;
@@ -9,8 +10,8 @@ import danogl.components.CoordinateSpace;
 import danogl.gui.*;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
+import src.brick_strategies.RemoveBrickStrategy;
 import src.gameobjects.Ball;
-import src.gameobjects.BigBrick;
 import src.gameobjects.Brick;
 import src.gameobjects.Paddle;
 
@@ -128,7 +129,7 @@ public class BrickerGameManager extends GameManager{
         // width - borders - distance between bricks divided by num of bricks:
         int brick_size = (int) (windowDimentios.x()-(NUMBER_OF_BRICKS -1) - 2 * BORDER_WIDTH)/ NUMBER_OF_BRICKS;
         Vector2 brickShape = new Vector2(brick_size, BRICK_HEIGHT);
-        CollisionStrategy brickCollisionStrategy = new CollisionStrategy(gameObjects());
+        CollisionStrategy brickCollisionStrategy = new RemoveBrickStrategy(gameObjects());
 
         // for row
         for (int brick_row = 0; brick_row < N_ROWS; brick_row++) {

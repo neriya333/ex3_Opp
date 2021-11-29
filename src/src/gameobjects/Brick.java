@@ -8,11 +8,10 @@ import src.brick_strategies.CollisionStrategy;
 
 public class Brick extends GameObject {
 
-    private final CollisionStrategy collisionStrategy;
+    private CollisionStrategy collisionStrategy;
 
     public Brick(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, CollisionStrategy collisionStrategy) {
         super(topLeftCorner, dimensions, renderable);
-
         this.collisionStrategy = collisionStrategy;
     }
 
