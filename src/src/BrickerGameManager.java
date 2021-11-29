@@ -139,7 +139,7 @@ public class BrickerGameManager extends GameManager{
 
                 GameObject new_brick = new Brick(new Vector2(brick_x_placement, brick_y_placement),
                          brickShape, brickImage, brickCollisionStrategy);
-                 gameObjects().addGameObject(new_brick);
+                 gameObjects().addGameObject(new_brick,Layer.STATIC_OBJECTS);
 //                 new_brick.setCenter(new Vector2(brick_x_placement - brick_size / 2.f, brick_y_placement+ BRICK_HEIGHT /2.f));
                  brick_x_placement += brick_size + 1; // as I take into account the distance between blocks
             }
