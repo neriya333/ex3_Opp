@@ -10,8 +10,8 @@ import danogl.gui.*;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 import src.gameobjects.Ball;
+import src.gameobjects.BigBrick;
 import src.gameobjects.Brick;
-import src.gameobjects.GraphicLifeCounter;
 import src.gameobjects.Paddle;
 
 import java.util.Random;
@@ -39,6 +39,7 @@ public class BrickerGameManager extends GameManager{
         this.windowController = windowController;
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         windowDimentios = windowController.getWindowDimensions();
+        livesCounter = new Counter(3);
 
         // creating ball
         Renderable ballImage = imageReader.readImage("assets\\ball.png",true);
@@ -59,39 +60,16 @@ public class BrickerGameManager extends GameManager{
         // add background image
         createGameObjectBackgraound(imageReader, windowController, "assets/DARK_BG2_small.jpeg");
 
+
+
+
+
         // load bricks' image and define how many rows and columns of bricks they will be, as well as the bricks height
         Renderable brickImage = imageReader.readImage("assets\\brick.png",false);
-        int BRICK_HEIGHT = 15, NUMBER_OF_BRICKS = 8, N_ROWS=5;
+        int BRICK_HEIGHT = 15, N_COL = 8, N_ROWS = 5;
 
         // creates NUMBER_OF_BRICKS*N_ROWS brick objects, looking link brickImage, with height BRICK_HEIGHT
-        createGameObjectBricks(windowDimentios, brickImage, BRICK_HEIGHT, NUMBER_OF_BRICKS, N_ROWS);
-
-        // create manager of graphic-hearts and add it to the game objects
-        int HEART_SHAPE = 15;
-        Vector2 leftDownCorner = new Vector2(0,windowDimentios.y()),
-                heartShape = new Vector2(HEART_SHAPE, HEART_SHAPE);
-        Renderable heartImage = imageReader.readImage("assets/heart.png", true);
-
-        GameObject graphicHeartsManager = new GraphicLifeCounter(leftDownCorner, heartShape, livesCounter, heartImage,gameObjects(),LIVE);
-        gameObjects().addGameObject(graphicHeartsManager);
-//        graphicHeartsManager.setCenter(); is there a need for this?
-
-
-        GameObject heart = new GameObject(Vector2.ZERO, new Vector2(HEART_SHAPE,HEART_SHAPE),
-                imageReader.readImage("assets/heart.png", false));
-        heart.setCenter(Vector2.ZERO.add(new Vector2(10,350)));
-        gameObjects().addGameObject(heart, Layer.BACKGROUND);
-
-        Vector2 heartPlacements = new Vector2(0,windowDimentios.y() - 50);
-        GameObject hearts = new GraphicLifeCounter(Vector2.ZERO, heartPlacements, livesCounter, heartImage, this.gameObjects(), livesCounter.value());
-        gameObjects().addGameObject(hearts);
-//
-//        GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(graphicHeartsPlacements,
-//                graphicHeartsShape,
-//                LIFE_COUNTER,
-//                heartImage,gameObjects(),LIFE_COUNTER.value());
-
-
+        createGameObjectBricks(windowDimentios, brickImage, BRICK_HEIGHT, N_COL, N_ROWS);
     }
 
     private void createGameObjectBall(Vector2 windowDimentios, Renderable ballImage, Sound collisionSound) {
@@ -116,7 +94,6 @@ public class BrickerGameManager extends GameManager{
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-
         checkForGameEnd();
     }
 
@@ -151,18 +128,19 @@ public class BrickerGameManager extends GameManager{
         // width - borders - distance between bricks divided by num of bricks:
         int brick_size = (int) (windowDimentios.x()-(NUMBER_OF_BRICKS -1) - 2 * BORDER_WIDTH)/ NUMBER_OF_BRICKS;
         Vector2 brickShape = new Vector2(brick_size, BRICK_HEIGHT);
+        CollisionStrategy brickCollisionStrategy = new CollisionStrategy(gameObjects());
 
         // for row
         for (int brick_row = 0; brick_row < N_ROWS; brick_row++) {
             int brick_x_placement = (int)BORDER_WIDTH,
                 brick_y_placement = (int)BORDER_WIDTH + (BRICK_HEIGHT +1) * brick_row;
             // for column
-            for (int n_brick = 0; n_brick <= NUMBER_OF_BRICKS; n_brick++) {
+            for (int n_brick = 0; n_brick < NUMBER_OF_BRICKS; n_brick++) {
 
                 GameObject new_brick = new Brick(new Vector2(brick_x_placement, brick_y_placement),
-                         brickShape, brickImage, new CollisionStrategy(gameObjects()));
-                 gameObjects().addGameObject(new_brick,Layer.STATIC_OBJECTS);
-                 new_brick.setCenter(new Vector2(brick_x_placement - brick_size / 2.f, brick_y_placement+ BRICK_HEIGHT /2.f));
+                         brickShape, brickImage, brickCollisionStrategy);
+                 gameObjects().addGameObject(new_brick);
+//                 new_brick.setCenter(new Vector2(brick_x_placement - brick_size / 2.f, brick_y_placement+ BRICK_HEIGHT /2.f));
                  brick_x_placement += brick_size + 1; // as I take into account the distance between blocks
             }
         }
